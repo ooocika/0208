@@ -1,0 +1,780 @@
+public class ConsoleLoggingNotificationListener
+    implements NotificationListener, NotificationFilter {
+
+  public void handleNotificaton(Notification notification, Object handback) {
+    System.out.println(notification);
+    Sysytem.out.println(handback);
+  }
+
+  public boolean isNotificationEnabled(Notification notification) {
+
+    return AttributeChangeNotification.class.isAssignableFrom(notificaton.getClass());
+
+  }
+
+}
+
+//
+public class JmxTestBean implements IJmxTestBean, NotificationPublisherAware {
+
+  private String name;
+  private int age;
+  private boolean isSuperman;
+  private NotificationPublisher publisher;
+
+  public int add(int x, int y) {
+    int answer = x + y;
+    this.publisher.sendNotification(new Notification("add", this, 0));
+    return answer;
+  }
+
+  public void dontExposeMe() {
+    throw new RuntimeException();
+
+  }
+
+  public void setNotificationPublisher(NotificationPublisher notificationPublisher) {
+    this.publisher = notificationPublisher;
+  }
+}
+
+//
+public class SimpleOrderManager implements OrderManager{
+
+  private MailSender mailSender;
+  private SimpleMailMessage templateMessage;
+
+  public void setMailSender(MailSender mailSender){
+    this.mailSender = mailSender;
+  }
+
+  publi void setTemplateMessage(SimpleMailMessage templateMessage){
+    this.templateMessage = templateMessage;
+  }
+  public void placeOrder(Order order){
+
+    SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+    msg.setTo(order.getCustomer().getEmailAddress());
+    msg.setText(
+      "Dear" + order.getCustomer().getFirstName() 
+      + order.getCustomer().getLastName()
+      +", thank you for placing order. Your order number is "
+      + order.getOrderNumber());
+    
+    try{
+      this.mailSender.send(msg);
+    }  
+  catch(MailException ex){
+    System.err.println(ex.getMessage());
+  }
+  
+  }
+}
+
+//
+public class SimpleMailMessage implements OrderMessage {
+
+  private JavaMailSender(JavaMailSender mailSender){
+    this.mailSender = mailSender;
+  }
+
+  public void placeOrder(final Order order) {
+    MimeMessagePreparator preparator=new MimeMessagePreparator(){public void prepare(MimeMessage mimeMessage)throws Exception{new InternetAddress(order.getCustomer().getEmailAddress()));mimeMessage.setFrom(new InternetAddress(new InternetAddress("mail@mycompany.example"));mimeMessage.setText("Dear"+order.getCustomer().getFirstName()+" "+
+
+    order.getCustomer().getLastName()+", thank you for order."Your order number is "+order.getOrderNumber()+".");
+
+    }};try{this.mailSender.send(preparator);}catch(MailException ex){System.err.println(ex.getMessage());}
+
+  }}
+
+  //
+  JavaMailSenderImpl sender = new JavaMailSenderImpl();sender.setHost("mail.host.com");
+
+  MimeMessage message = sender.createMimeMessage();
+  MimeMessageHelper helper = new MimeMessageHelper(
+      message);helper.setTo("test@host.com");helper.setText("Thank you for ordering!");
+
+  sender.send(message);
+  //
+  JavaMailSenderImpl sender = new JavaMailSenderImpl();sender.setHost("mail.host.com");
+
+  MimeMessage message = sender.createMimeMessage();
+
+  MimeMessageHelper helper = new MimeMessageHelper(message, true);helper.setTo("test@host.com");
+
+  helper.setText("Check out this image!");
+
+  FileSystemResource file = new FileSystemResource(
+      new File("c:/Sample.jpg"));helper.addAttachment("CoolImage.jpg",file);sender.send(message);
+
+  //
+Java MailSenderImpl sender=new JavaMailSenderImpl();sender.setHost("mail.host.com");
+
+  MimeMessage message = sender.createMimeMessage();
+
+  MimeMessageHelper helper = new MimeMessageHelper(message, true);helper.setTo("test@host.com");
+
+  helper.setText("<html><body><img src ='cid:identifier1234'></body></html>",true);
+
+  FileSystemResource res = new FileSystemResource(new File("c:/Sample.jpg"));helper.addInline("identifier1234",res);
+
+  sender.send(message);
+
+  //
+  public class TaskExecutorExample {
+
+    private class MessagePrinterTask implements Runnable {
+
+      private String message;
+
+      public MessagePrinterTask(String message) {
+        this.message = message;
+      }
+
+      public void run() {
+        System.out.println(message);
+      }
+    }
+
+    private TaskExecutor taskExecutor;
+
+    public TaskExecutorExample(TaskExecutor taskExecutor) {
+      this.taskExecutor = taskExecutor;
+    }
+
+    public void printMessage() {
+      for (int i = 0; i < 25; i++) {
+        taskExecutor.execute(new MessagePrinterTask("Message " + i));
+      }
+    }
+  }
+
+  //
+  public interface TaskScheduler {
+
+    ScheduledFuture schedule(Runnable task, Trigger trigger);
+
+    ScheduledFuture schedule(Runnable task, Instant startTime);
+
+    ScheduledFuture scheduleAFixedRate(Runnable task, Instant startTime, Duration period);
+
+    ScheduledFuture scheduleAtFixedRate(Runnable task, Duration period);
+
+    ScheduledFuture scheduleWithFixedDelay(Runnable task, Instant startTime, Duration delay);
+
+    ScheduledFuture scheduleWithFixedDelay(Runnable task, Duration delay);
+
+    //
+    public interface Trigger {
+      Date nextExectutionTime(TriggerContext triggerContext);
+    }
+
+    public interface TriggerContext {
+      Date lastScheduledExecutionTime();
+
+      Date lastActualExecutionTime();
+
+      Date lastCompletionTime();
+    }
+    //
+
+    scheduler.schedule(task,new CronTrigger("0 15 9-17 * * MON-FRI"));
+
+    //
+    @Configuration
+    @EnableAsync
+    @EnableScheduling
+    public class AppConfig {
+
+    }
+
+    //
+@Scheduled(fixedDelay = 5000)
+  public void doSomething(){
+  
+  }
+
+    //
+@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+  public void doSomething(){
+  
+  }
+
+    //
+@Scheduled(initialDelay = 1000, fixedRate = 5000)
+  public void doSomthing(){
+  
+  }
+    //
+
+@Scheduled(cron = "*/5 * * * * MON-FRI")
+  public void doSomething(){
+  
+  }
+
+    //
+@Async
+  void doSomething(){
+  
+  }
+
+    //
+@Async
+  void doSomethinf(String s){
+  
+  }
+
+    //
+  @Async
+  Future<String> returnSomething(int i){
+  
+  }
+
+    //
+    public class SampleBeanImpl implements SampleBean {
+
+      @Async
+      void doSomething() {
+
+      }
+
+    }
+
+    public class SampleBeanInitializer {
+
+      private final SampleBean bean;
+
+      public SampleBeanInitializer(SampleBean bean) {
+        this.bean = bean;
+      }
+
+      @PostConstruct
+      public void initialize() {
+        bean.doSomething();
+      }
+    }
+
+    //
+@Async("otherExecutor")
+  void doSomething(String s){
+  
+  }
+
+    //
+    public class MyAsycUncaughtExceptionHandler implements AsyncUncaughtExceptionHandler {
+
+      @Override
+      public void handleuncaughtException(Throwable ex, Method method, Object... params) {
+
+      }
+    }
+
+    //
+    public class ExampleJob extends QuartzJobBean {
+
+      private int timeout;
+
+      public void setTimeout(int timeout) {
+        this.timeour = timeout;
+      }
+
+      protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+
+      }
+    }
+
+    //
+    public class ExampleBusinessObject {
+
+      public void doIt() {
+
+      }
+    }
+
+    //
+    //
+@Cacheable("books")
+  public Book findBook(ISBN isbn){...}
+
+  @Cacheable({"books","isbns"})
+    public Book findBook(ISBN isbn){...}
+    //
+
+  @Cacheable("books")
+    public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+  //
+
+  @Cacheable(cacheNames="books", key="#isbn")
+    public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+
+  @Cacheable(cacheNames="books", key="#isbn.rawNumber")
+    public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+
+  @Cacheable(cacheNames="books", key="T(someType).hash( #isbn)")
+    public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+  //
+  @Cacheable(cacheNames="books", keyGenerator="myKeyGenerator")
+  
+    public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+  //
+  @Cacheable(cacheNames="books", cacheManager ="anotherCacheManager")
+  
+    public Book findBook(ISBN isbn){...}
+
+    //
+  @Cacheable(cacheResolver="runtimeCacheResolver")
+    public Book findBook(ISBN isbn){...}
+    //
+
+    @Cacheable(cacheNames ="foos", sync=true)
+    public Foo executeExpensiveOperation(String id){...}
+
+    //
+    @Cacheable(cacheNames ="book",condition="#name.length() <32")
+    public Book findBook(String name)
+    //
+    @Cacheable(cacheNames ="book", condition="#name.length() <32",
+              unless="#result.hardback")
+    public Book findBook(String name)
+    //
+    @Cacheable(cacheNames = "book", condition="#name.length() <32",
+              unless="#result.hardback")
+    
+    public Book findBook(String name)
+    //
+    @Cacheable(cacheNames = "book", condition="#name.length() <32",
+               unless="#result?hardback")
+    public Optinal<Book> findBook(String name)
+    //
+    @Cacheable(cacheNames = "book", key="#isbn")
+    public Book updateBook(ISBN isbn, BookDescriptor descriptor)
+    //
+    @CacheEvict(cacheNames = "book", allEntris = true)
+    public void loadBooks(InputStream batch)
+    //
+      @Caching(evict = {@CacheEvict("primary", @CachEvict(cacheNames ="secondary", 
+                                                         key="#p0")
+  })
+
+  public Book importBooks(String deposit, Date date)
+               //
+
+
+  @CacheConfig("books")
+      public class BookRepositoryImpl implements BookRepository{
+
+        @Cacheable
+        public Book findBook(ISBN isbn){...}
+      }
+//
+@Configuration
+  @EnableCaching
+  public class AppConfig{
+    
+  }
+//
+@Retention(RetentionPolicy.RUNTIME)
+  @Target({ElementType.METHOD})
+  @Cacheable(cacheNames="books", key="#isbn")
+  public @interface SlowService{
+    
+  }
+  //
+
+@Cacheable(cacheNames="books", key="#isbn")
+  public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+
+  //
+  @SlowService
+  public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+  //
+  @Cacheable(cacheNames="books",cacheResolverFactory=MyCacheResolverFactory.class)
+  public Book findBook(ISBN isbn)
+  //
+  @Cacheable(cacheNames="books", key="#isbn")
+  public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
+
+  @CacheResult(cacheNames="books")
+  public Book findBook(@CacheKey ISBN isbn , boolean checkWarehouse, boolean includeUsed)
+  //
+  @CachResult(cacheNames="books", exceptionCacheName ="failures"
+             cachedExceptions = InvalidIsbnNotFoundException.class)
+
+  public Book findBook(ISBN isbn)
+  //
+  Flux<User> users = client.get().retrieve().bodyToFlux(User.class);
+
+val users = client.get().retrieve().bodyToFlux<User>();
+
+val users : Flux<User> = client.get().retrieve().bodyToFlux<User>();
+//
+class Foo {}
+
+class Bar{
+  private final Foo foo;
+  public Bar(Foo foo){
+    this.foo = foo;
+  }
+}
+
+GenericApplicationContext context = new GenericApplicationContext();
+context.registerBean(Foo.clas);
+context.registerBean(Bar.class,() -> new Bar(context.getBean(Foo.class)));
+//
+class Foo
+  class Bar(private val foo: Foo)
+
+  val context = GenericApplicationContext().apply{
+  registerBean<Foo>()
+    registerBean{Bar(it.getBean())}
+  }
+//
+val context = GenericApplicationContext().apply{
+  registerBean<Foo>()
+    registerBean<Bar>()
+}
+//
+class Foo
+  class Bar(private val foo: Foo)
+  class Baz(var message:String ="")
+  class FooBar(private val baz: Baz)
+
+  val myBean = beans{
+
+  bean<Foo>()
+    bean<Bar>()
+    bean("bazBean"){
+    Baz().apply{
+      message = "Hello world"
+    }
+    }
+  profile("foobar"){
+    bean{FooBar(ref("bazBean"))}
+  }
+  bean(::myRouter)
+  }
+fun myRouter(foo: Foo, bar: Bar, baz: Baz) = router{
+  
+}
+//
+val context = GenericApplicationContext().apply{
+  myBeans.initialize(this)
+    refresh()
+}
+//
+@Configuration
+  class RouterRouterConfiguration{
+
+    @Bean
+    fun mainRouter(userHandler: UserHandler) = router{
+
+      accept(TEXT_HTML).nest{
+        GET("/"){ok().render("index")}
+        GET("/sse"){ok().render("sse")}
+        GET("/users", userHandler::findAllView)
+      }
+      "/api".nest{
+        accept(APPLICATION_JSON).nest{
+          GET("/users", userHandler::findAll)
+            
+        }
+        accept(TEXT_EVENT_STREAM).nest{
+          GET("/users", userHandler::stream)
+        }
+      }
+      resources("/**"").ClassPathResource("static/"))
+    }
+  }
+//
+val mockMvc: MockMvc = ...
+  mockMvc.get("/person/{name}", "Lee"){
+  secure = true
+    accept = APPLICATION_JSON
+    headers{
+    contentLanguage = Locale.FRANCE
+      
+    }
+  principal = Principal("foo")
+  }.andExpect{
+  status{isOk}
+  content {contentType(APPLICATION_JSON)}
+  jsonPath("$.name").value("Lee")}
+    content{json"""{"someBoolean":false}""", false}
+    }.andDo{
+    print()
+    }
+                       
+//
+dependencies{
+  runtime("org.jetbrains.kotlin:kotlin-scripting-jsr223:${kotlinVersion}")
+}
+//
+@Configuration
+  class KotlinScriptConfiguration{
+
+    @Bean
+    fun kotlinScriptConfigurer() =ScriptTemplateConfigurer().apply{
+      engineName = "kotlin"
+        setScripts("scripts/render.kts")
+        renderFunction = "render"
+isSharedEngine = false
+        }
+
+  @Bean
+    fun KotlinScriptViewResolver() = ScriptTemplateViewResolver().apply{
+    setPrefix("templates/")
+    setSuffix(".kts")
+      }
+  }
+//
+dependencies{
+
+  implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:${kotlinVersion}")
+}
+implementations("org.jetbrains.kotlin:kotlin-scripting-jsr223:${kotlinVersion}")
+  //
+  @RestController
+  class CoroutineRestController(client: WebClient, banner: Banner){
+
+  @GetMapping("/suspend")
+    suspend fun suspendingEndpoint():Banner{
+
+    delay(10)
+      return banner
+    }
+
+  @GetMapping("/flow")
+    fun flowEndpoint() = flow{
+
+    delay(10)
+    emit(banner)
+    delay(10)
+    emit(banner)
+    }
+
+@GetMapping("/deferred")
+  fun deferredEndpoint() = GlobalScope.async{
+  delay(10)
+    banner
+  }
+
+@GetMapping("/sequential")
+  suspend fun sequential(): List<Banner>{
+  val banner1 = client
+    .get()
+    .uri("/suspend")
+    .accept(MediaType.APPLICATION_JSON)
+    .awaitExchange()
+    .awaitBody<Banner>()
+    val banner2 = client
+    .get()
+    .uri("/suspend")
+.accept(MediaType.APPLICATION_JSON)
+    .awaitExchange()
+    .awaitBody<Banner>()
+    return listOf(banner1, banner2)
+    
+    }
+@GetMapping("/parallel")
+  suspend fun parallel(): List<Banner> = coroutineScope{
+  val deferredBanner1 : Deferred<Banner> = async
+  }
+client 
+  .get()
+  .uri("/suspend")
+  .accept(MediaType.APPLICATION_JSON)
+  .awaitExchange()
+  .awaitBody<Banner>()
+  }
+  val deferredBanner2 : Deferred<Banner> = async{
+  client
+    .get()
+    .uri("/suspend")
+    .accept(MediaType.APPLICATION_JSON)
+    .awaitExchange()
+    .awaitBody<Banner>()
+  }
+listOf(deferredBanner1.await(), deferredBanner2.await())
+  }
+@GetMapping("/error")
+  suspend fun error(){
+  throw IllegalStateException()
+  }
+
+@GetMapping("/cancel")
+  suspend fun cancel(){
+  throw CancellationException()
+  }
+//
+@Controller
+  class CoroutineController(banner: Banner){
+
+  @GetMapping("/")
+  suspend fun render(model: Model): String{
+    delay(10)
+      model["banner"] = banner
+      return "index"
+  }
+    
+    }
+//
+@Configuration
+  class RouterConfiguration{
+
+    @Bean
+    fun mainRouter(userHandler: UserHandler) = coRouter{
+GET("/", userHandler::listView)
+      GET("/api/user", userHandler::listApi)
+    }  }
+//
+class UserHandler(builder: WebClient.Builder){
+  private val client = builder.baseUrl("...").build()
+
+    suspend fun listView(request: ServerRequest): ServerResponse = 
+    ServerResponse.ok().renderAndAwait("users", mapOf("users" to client.get().uri("...").awaitExchange().awaitBody<User>()))
+    
+    suspend fun listApi(request: ServerRequest): ServerResponse =
+
+    ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyAndAwait(
+      client.get().uri("...").awaitExchange().awaitBody<User>())
+    }
+//
+
+class PersonRepository(private val operator : TransactionalOperator){
+
+  suspend fun initDatabase () = operator: executeAndAwait{
+  insertPerson1()
+  insertPerson2()
+  }
+  private suspend fun insertPerson1(){
+  
+  }
+
+private suspend fun insertPerson2(){
+  
+}
+}
+//
+class PersonRepository(private val operator : TransactionalOperator){
+  fun updatePeople() findPeople().map(::updatePerson).transactional(operator)
+
+  private fun findPeople():Flow<Person>{
+  
+  }
+
+private suspend fun updatePerson(person: Person): Person{
+  
+}
+}
+//
+class Person (val name: String ,val age:Int)
+
+  data class Person(val name: String, val age: Int)
+
+  val jack = Person(name = "Jack", age = 1)
+  val olderJack = jack.copy(age = 2)
+  //
+  @Component
+  class YourBean(
+  private val mongoTemplate: MongoTemplate,
+  private val solrClient: SolrClient
+  )
+  //
+  @Component
+  class YourBean{
+
+  @Autowired
+  lateinit var mongoTemplate: MongoTemplate
+
+  @Autowired
+  lateinit var solrClient: SolrClient
+  }
+  //
+
+  @Bean
+  fun propertyConfigurer() = PropertySourcesPlaceholderConfigurer().apply{
+  setPlaceholderPrefix("%{")
+  }
+//
+@Bean
+  fun kotlinPropertyConfigurer() =PropertySourcePlaceholderConfigurer().apply{
+  setPlaceholderPrefix("%{")
+    setIgnoreUnresolvablePlaceholders(true)
+  }
+@Bean
+  fun defaultPropertyConfigurer() =PropertySourcesPlaceholderConfigurer()
+  //
+  public @inferface RequestMapping{
+
+  @AliasFor("path")
+    String[] value() default {};
+
+  @AliasFor("value")
+    String[] path()default{};
+
+  RequestMethod[] method() default{};
+  
+  
+}
+//
+@SpringJUnitConfig(TestConfig::class)
+  @TestConstructor(autowireMode = AutowireMode.All)
+  class OrderServiceIntegrationTests(val orderService: OrderService,
+                                    val customerService: CustomerService){
+  
+                                    }
+//
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+  class IntegrationTests{
+
+    val application = Application(8181)
+    val client = WebClient.create("http://localhost:8181")
+
+  @BeforeAll
+  fun beforeAll(){
+  application.start()
+  }
+
+@Test
+  fun'Find all users on HTML page'(){
+  client.get().uri("/users")
+  .accept(MediaType.TEXT_HTML)
+  .bodyToMono<String>()
+  
+  .test()
+  .expectNextMatches{ it.contains("Foo")}
+.verifyComplete()  
+}
+  @AfterAll
+  fun afterAll()
+  {
+  application.stop()
+  }
+//
+  }
+class SpecificationLikeTest{
+
+  @Nestded
+  @DisplayName("a calculator")
+inner class Calculator{
+
+    val calculator = SampleCalculator()
+
+    @Test
+    fun'should return the result of adding the first number to the second number'()
+    {
+      val sum = calculator.sum(2,4)
+    assertEquals(5, sum)
+        }
+
+    @Test
+    fun'Should return the result of subtracting the first number from the first number'(){
+
+      val subtract = calculator.subtract(4,2)
+        assertEquals(2, subtract)
+    }
+}
+
+}
+//
+1410P
